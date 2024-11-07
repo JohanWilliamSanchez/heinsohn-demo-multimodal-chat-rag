@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Template</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            display: flex;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 300px;
+            background-color: #ca1d48;
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sidebar h2 {
+            margin-top: 0;
+        }
+
+        .sidebar .profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar .profile img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background: white;
+            padding: 4px;
+        }
+
+        .sidebar .menu {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .sidebar .menu li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar .menu li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .chat {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 20px;
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header .search-bar {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: #f9f9f9;
+            overflow-y: auto;
+        }
+
+        .chat-message {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .chat-message img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .chat-message .message-content {
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            max-width: 70%;
+        }
+
+        .chat-message.user-message {
+            justify-content: flex-end;
+        }
+
+        .chat-message.user-message .message-content {
+            background-color: #e11948dc;
+            text-align: right;
+            color: white;
+        }
+
+        .chat-footer {
+            padding: 10px 20px;
+            background-color: #fff;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-footer input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            margin-right: 10px;
+        }
+
+        .chat-footer button {
+            padding: 10px 20px;
+            background-color: #c91e47;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .chat-footer button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .chat-footer button#attach {
+            background-color: #c91e47;
+        }
+
+        .chat-footer input[type="file"] {
+            display: none;
+        }
+
+        .icon-container {
+            display: flex;
+            justify-content: center; /* Centra horizontalmente */
+            align-items: center;    /* Centra verticalmente */
+            gap: 20px;
+        }
+
+        .icon {
+            background-color: #ffc000;
+            padding: 10px;
+            border-radius: 10px;
+            color: white;
+            font-size: 1;
+            width: 15px;
+            height: 15px;
+        }
+
+        #mic-button {
+
+            padding: 10px 20px;
+            background-color: #c91e47;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        #mic-button.recording {
+            background-color: #c91e4643;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="profile">
+                <img src="image/heinsohn 2.png" alt="Logo">
+                <h2>Asisten Heinsohn</h2>
+            </div>
+            <ul class="menu">
+                <li><a href="#">Conversación</a></li>
+                <li><a href="#">Team Chat</a></li>
+                <li>
+                    <div class="icon-container">
+                        <div class="icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="icon"><i class="fas fa-calendar-alt"></i></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="chat">
+            <div class="chat-header">
+                <h3>Iniciando Chat</h3>
+                <input type="text" class="search-bar" placeholder="Search...">
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="chat-message">
+                    <img src="image/heinsohn 2.png" alt="User">
+                    <div class="message-content">
+                        <p>¡Hola! Soy un asistente virtual. ¿En qué puedo ayudarte hoy? Si tienes alguna sugerencia para mejorar nuestros productos o servicios, podemos seguir el procedimiento descrito en nuestro documento de procedimientos para procesar tu sugerencia y tomar una decisión. ¿En qué más puedo ayudarte?</p>
+                        <p><small>12 May, 12:10</small></p>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="chat-footer">
+                <input type="file" id="file-input">
+                <button id="attach"><i class="fas fa-paperclip"></i> </button>
+                <input type="text" id="message-input" placeholder="Escribe un mensaje...">
+                <button id="mic-button"><i class="fas fa-microphone"></i> </button>
+                <button id="send" disabled>Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const messageInput = document.getElementById("message-input");
+        const sendButton = document.getElementById("send");
+
+        const userId = 'user_' + Math.random().toString(36).substr(2, 9);
+
+        messageInput.addEventListener("input", function () {
+            sendButton.disabled = messageInput.value.trim() === "";
+        });
+
+        sendButton.addEventListener("click", function () {
+            const messageText = messageInput.value.trim();
+            if (messageText !== "") {
+                send_message(messageText);
+            }
+        });
+
+        document.getElementById("attach").addEventListener("click", function () {
+            document.getElementById("file-input").click();
+        });
+
+        document.getElementById("file-input").addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                alert("Archivo seleccionado: " + file.name);
+            }
+        });
+
+        function send_message(text) {
+            const chatMessages = document.getElementById("chat-messages");
+
+            // Crear el mensaje del usuario
+            const userMessage = document.createElement("div");
+            userMessage.classList.add("chat-message", "user-message");
+            const messageContent = document.createElement("div");
+            messageContent.classList.add("message-content");
+
+            // Obtener la fecha y hora actual
+            const now = new Date();
+            const options = { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false };
+            const formattedDate = now.toLocaleDateString('es-ES', options).replace('.', ''); // Remover el punto del mes abreviado
+
+            messageContent.innerHTML = `<p>${text}</p><p><small>${formattedDate}</small></p>`;
+            userMessage.appendChild(messageContent);
+            chatMessages.appendChild(userMessage);
+
+            // Limpiar el campo de entrada y deshabilitar el botón
+            messageInput.value = "";
+            sendButton.disabled = true;
+
+            // Desplazar hacia abajo
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Hacer un llamado AJAX a la API de Python
+            var input = document.getElementById('file-input');
+            // Crear el mensaje del asistente
+            const asistemtMessage = document.createElement("div");
+            asistemtMessage.classList.add("chat-message");
+            if (input.files && input.files[0]) {
+                console.log("tenemos un archivo ")
+                asistemtMessage.innerHTML = `<div class="chat-message">
+                                                        <img src="image/heinsohn 2.png" alt="User">
+                                                        <div class="message-content">
+                                                            <p>Se subio el archivo ${input.files[0].name}</p>
+                                                            <p><small>${formattedDate}</small></p>
+                                                        </div>
+                                                    </div>`;
+                var formData = new FormData();
+                formData.append('file', input.files[0]);
+                formData.append('message',text)
+				formData.append('user_id', userId)
+                fetch('http://127.0.0.1:5000/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert(data.error);
+                        } else {
+                            // Mostrar la respuesta en el chat
+                            asistemtMessage.innerHTML = `<div class="chat-message">
+                                                        <img src="image/heinsohn 2.png" alt="User">
+                                                        <div class="message-content">
+                                                            <p>${data.message}</p>
+                                                            <p><small>${formattedDate}</small></p>
+                                                        </div>
+                                                    </div>`;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                input.value = "";    
+            }else{
+                fetch('http://127.0.0.1:5000/message',
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ message: text, user_id: userId })
+                        }
+                    ).then(response => response.json()
+                    ).then(
+                        data => {
+                            if (data.error) {
+                                alert(data.error);
+                            } else {
+                                // Mostrar la respuesta en el chat
+                                asistemtMessage.innerHTML = `<div class="chat-message">
+                                                        <img src="image/heinsohn 2.png" alt="User">
+                                                        <div class="message-content">
+                                                            <p>${data.message}</p>
+                                                            <p><small>${formattedDate}</small></p>
+                                                        </div>
+                                                    </div>`;
+                            }
+                        }
+                    ).catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+
+            chatMessages.appendChild(asistemtMessage);
+
+        }
+
+        function simulateAjaxRequest(userMessage) {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:5000/process_message", true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    const response = JSON.parse(xhr.responseText);
+                    receiveMessage(response.message);
+                }
+            };
+
+            xhr.send(JSON.stringify({ message: userMessage }));
+        }
+
+        function receiveMessage(text) {
+            const chatMessages = document.getElementById("chat-messages");
+
+            const systemMessage = document.createElement("div");
+            systemMessage.classList.add("chat-message");
+            const messageContent = document.createElement("div");
+            messageContent.classList.add("message-content");
+            messageContent.innerHTML = `<p>${text}</p><p><small>Just now</small></p>`;
+            systemMessage.appendChild(messageContent);
+            chatMessages.appendChild(systemMessage);
+
+            // Desplazar hacia abajo
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Habilitar el botón enviar
+            sendButton.disabled = false;
+        }
+
+        // funcionalidad de audio
+        let mediaRecorder;
+        let audioChunks = [];
+        let recognition;
+        let isRecording = false;
+        let finalTranscription = '';
+
+        const micButton = document.getElementById('mic-button');
+        const micIcon = micButton.querySelector('i');
+        const audioPlayback = document.getElementById('audio-playback');
+        const downloadLink = document.getElementById('download-link');
+        const transcriptionDiv = document.getElementById('message-input');
+
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'es-ES';
+
+            recognition.onresult = (event) => {
+                let interimTranscription = '';
+                let finalTranscription = '';
+
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalTranscription += transcript + ' ';
+                    } else {
+                        interimTranscription += transcript;
+                    }
+                }
+
+                // Actualizar el campo de entrada del chat
+                const messageInput = document.getElementById('message-input');
+                messageInput.value = finalTranscription + interimTranscription;
+                
+                // Activar el botón de envío si hay texto
+                sendButton.disabled = messageInput.value.trim() === "";
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Error en el reconocimiento de voz:', event.error);
+            };
+        } else {
+            alert('Tu navegador no soporta la API de reconocimiento de voz.');
+        }
+
+        async function toggleRecording() {
+            if (!isRecording) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+
+                    mediaRecorder.ondataavailable = event => {
+                        if (event.data.size > 0) {
+                            audioChunks.push(event.data);
+                        }
+                    };
+
+                    mediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/mp4' });
+                        const audioUrl = URL.createObjectURL(audioBlob);
+
+                        audioPlayback.src = audioUrl;
+                        downloadLink.href = audioUrl;
+                        downloadLink.download = 'grabacion.mp4';
+                        downloadLink.style.display = 'block';
+
+                        audioChunks = [];
+                    };
+
+                    mediaRecorder.start();
+                    recognition.start();
+                    isRecording = true;
+                    micButton.classList.add('recording');
+                    micIcon.classList.remove('fa-microphone');
+                    micIcon.classList.add('fa-stop');
+                } catch (error) {
+                    console.error('Error al acceder al micrófono:', error);
+                }
+            } else {
+                mediaRecorder.stop();
+                recognition.stop();
+                isRecording = false;
+                micButton.classList.remove('recording');
+                micIcon.classList.remove('fa-stop');
+                micIcon.classList.add('fa-microphone');
+            }
+        }
+
+        micButton.addEventListener('click', toggleRecording);
+
+    </script>
+</body>
+
+</html>
